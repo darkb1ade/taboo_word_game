@@ -1,0 +1,6 @@
+H: 100 # height per each player
+W: 600 # width of the whole image
+st_name: 20 # text start position for player's name
+st_word: 250 # text start position for player's word
+out: 'out'
+font_size: 50
