@@ -1,0 +1,12 @@
+version: "2.0"  # optional
+services:
+  webapp:
+    image: nginx
+    volumes:
+      - ./webapp:/usr/share/nginx/html
+    ports:
+      - 7000:80
+    restart: always
+
+
+
