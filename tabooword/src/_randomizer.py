@@ -10,10 +10,10 @@ class Randomizer:
 
     def add(self, word):
         if word in self.words:
-            msg = "[!] Duplicated word! Please insert again."
+            msg = f"[!] Duplicated word! Please insert again. Total {len(self.words)} word added"
         else:
             self.words.append(word)
-            msg = "Word added"
+            msg = f"Word added. Total {len(self.words)} word added"
         return msg
         # TODO not allow similar word
 

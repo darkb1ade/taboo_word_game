@@ -7,7 +7,6 @@ DOCKER_ADDOPTS=\
 	-v $(PROJECT_ROOT)/notebook:/workdir/notebook \
 	-v $(PROJECT_ROOT)/tabooword:/workdir/tabooword \
 	-v $(PROJECT_ROOT)/storage:/workdir/storage \
-	-p $(HOST_JUPYTER_PORT):8888 \
 	--env-file ./env.list \
 	$(OPTS)
 
@@ -21,8 +20,9 @@ run_bash:
 
 # run notebook
 run_notebook::
-	docker run -d --rm $(DOCKER_ADDOPTS) --name tabooword-notebook $(IMAGE_NAME):$(TAG) $(DOCKER_CMD_NOTEBOOK)
-
+	docker run -d --rm $(DOCKER_ADDOPTS) -p $(HOST_JUPYTER_PORT):8888 --name tabooword-notebook $(IMAGE_NAME):$(TAG) $(DOCKER_CMD_NOTEBOOK)
+run_app:
+	docker run -d $(DOCKER_ADDOPTS) -p 8889:8888 -p 5000:5000 --name tabooword-app $(IMAGE_NAME):$(TAG) python -m flask run --host=0.0.0.0 --debug
 run_notebook::
 	@echo "########################################"
 	@echo "########################################"

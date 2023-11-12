@@ -38,6 +38,6 @@ RUN pip install --no-cache-dir -r /tmp/requirements.txt
 
 #ENV PATH /opt/conda/envs/inu_radar/bin:$PATH
 
-ENV PYTHONPATH $PYTHONPATH:/workdir/tabooword/src:/workdir
+ENV PYTHONPATH $PYTHONPATH:/workdir/tabooword:/workdir
 
 WORKDIR /workdir

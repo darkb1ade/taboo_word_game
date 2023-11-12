@@ -20,21 +20,24 @@ class Player:
 
 
 class Engine:
-    def __init__(self, names: list, avatar_list: dict = None) -> None:
+    def __init__(self) -> None:
         """_summary_
 
         Args:
             names (list): players' name
             avatar_list (dict, optional): List of avatar's file name. Defaults to None (randomly select avatar).
         """
+
+        self.randomizer = Randomizer()
+        self.player_card_generator = PlayersCardGenerator()
+
+    def init_engine(self, names: list, avatar_list: list):
         if avatar_list is not None:
             assert len(names) == len(
                 avatar_list
             ), "[!] Lenght of player's name and avatar not match"
         self._set_directory()
         self.num_player = len(names)
-        self.randomizer = Randomizer()
-        self.player_card_generator = PlayersCardGenerator()
         self._set_player(name=names, avatar_list=avatar_list)
 
     def _set_directory(self):
@@ -93,6 +96,8 @@ class Engine:
 
         # Add image url to players' attribute (inplace)
         self.player_card_generator.run(self.players)
+        msg = f"Finished random. Total {len(self.randomizer)} word left."
+        return msg
 
 
 # TODO add class representative description, len of this object
