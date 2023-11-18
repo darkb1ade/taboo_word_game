@@ -22,7 +22,7 @@ run_bash:
 run_notebook::
 	docker run -d --rm $(DOCKER_ADDOPTS) -p $(HOST_JUPYTER_PORT):8888 --name tabooword-notebook $(IMAGE_NAME):$(TAG) $(DOCKER_CMD_NOTEBOOK)
 run_app:
-	docker run -d $(DOCKER_ADDOPTS) -p 8889:8888 -p 5000:5000 --name tabooword-app $(IMAGE_NAME):$(TAG) python -m flask run --host=0.0.0.0 --debug
+	docker run -d --rm $(DOCKER_ADDOPTS) -p 8889:8888 -p 5000:5000 --name tabooword-app $(IMAGE_NAME):$(TAG) python -m flask run --host=0.0.0.0 --debug
 run_notebook::
 	@echo "########################################"
 	@echo "########################################"
