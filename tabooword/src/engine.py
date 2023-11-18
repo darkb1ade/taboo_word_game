@@ -51,6 +51,7 @@ class Engine:
         with open("/workdir/tabooword/config/directory.yml", "r") as f:
             config = yaml.load(f, Loader=yaml.SafeLoader)
         self.avatar_files = glob(f'{config["avatar_dir"]}/*')
+        self.avart_dir = config["avatar_dir"]
 
     def _set_player(self, name: list, avatar_list: dict = None) -> None:
         """_summary_
@@ -58,7 +59,7 @@ class Engine:
 
         Args:
             name (list): List of players' name
-            avatar_list (dict, optional): List of avatar's file name. Defaults to None (randomly select avatar).
+            avatar_list (list, optional): List of avatar's file name. Defaults to None (randomly select avatar).
         """
         players = []
         if avatar_list is None:  # not given avatar do random
@@ -66,8 +67,15 @@ class Engine:
                 self.avatar_files[random.randint(0, 299)]
                 for _ in range(self.num_player)
             ]
-
+        else:
+            try:
+                avatar_list = [self.avatar_files[int(n)] for n in avatar_list]
+            except ValueError as e:
+                raise e
         for name, avatar in zip(name, avatar_list):
+            assert (
+                avatar in self.avatar_files
+            ), f"[!] Avatar not found for {avatar.split('/')[-1]}"
             players.append(Player(name=name, avatar=avatar))
         self.players = players
 

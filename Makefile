@@ -34,6 +34,19 @@ run_notebook::
 	@echo "########################################"
 	@echo "########################################"
 
+# remove the container
+rm_app:
+	docker rm -f tabooword-app || echo
+rm_notebook:
+	docker rm -f tabooword-notebook || echo
+
+
+############################ Unittest ############################
+test:
+	make rm_app
+	make run_app
+	pytest tests/*
+
 ############################ Utility ############################
 lint:
 	@black .
