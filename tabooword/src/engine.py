@@ -31,6 +31,13 @@ class Engine:
         self.randomizer = Randomizer()
         self.player_card_generator = PlayersCardGenerator()
 
+    def __repr__(self) -> str:
+        if hasattr(self, "players"):
+            players = [player.name for player in self.players]
+        else:
+            players = []
+        return f"Engine(players = {players}, num_words = {len(self.randomizer)})"
+
     def init_engine(self, names: list, avatar_list: list):
         if avatar_list is not None:
             assert len(names) == len(
@@ -86,6 +93,7 @@ class Engine:
         """_summary_
             Run the engine to add the taboo word for each player as well as generate player's card.
         """
+        assert hasattr(self, "num_player"), "[!] Object is not initialized!"
         assert (
             len(self.randomizer.words) > self.num_player
         ), f"[!] Not enough word for this round. Have {len(self.randomizer)} word for {self.num_player} players."
@@ -98,6 +106,3 @@ class Engine:
         self.player_card_generator.run(self.players)
         msg = f"Finished random. Total {len(self.randomizer)} word left."
         return msg
-
-
-# TODO add class representative description, len of this object
