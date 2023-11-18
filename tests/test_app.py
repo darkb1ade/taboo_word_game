@@ -1,0 +1,42 @@
+import requests
+import pytest
+
+
+@pytest.mark.parametrize(
+    "parameter, expected_status",
+    [
+        ("names=a,b", 200),
+        ("names=a,b&avatars=1,2", 200),
+        ("names=a,b&avatars=a,b", 404),
+        ("names=a,b&avatars=1,2&words=True", 200),
+    ],
+)
+def test_init_engine(parameter, expected_status):
+    resp = requests.post(f"http://127.0.0.1:5000/init_engine?{parameter}")
+    assert resp.status_code == expected_status
+
+
+def test_reset_word():
+    resp = requests.post(f"http://127.0.0.1:5000/reset_word")
+    assert resp.status_code == 200
+
+
+@pytest.mark.parametrize(
+    "parameter, expected_status", [("word=a", 200), ("word=b", 200), ("word=a", 404),],
+)
+def test_add(parameter, expected_status):
+    resp = requests.post(f"http://127.0.0.1:5000/add?{parameter}")
+    assert resp.status_code == expected_status
+
+
+def test_random():
+    requests.post("http://127.0.0.1:5000/init_engine?names=a,b&words=True")
+    requests.post("http://127.0.0.1:5000/add?word=test1")
+    requests.post("http://127.0.0.1:5000/add?word=test2")
+    requests.post("http://127.0.0.1:5000/add?word=test3")
+    resp = requests.post(f"http://127.0.0.1:5000/random")
+    data = resp.json()
+    assert resp.status_code == 200
+    assert list(data.keys()) == ["message", "player"]
+    resp = requests.post(f"http://127.0.0.1:5000/random")
+    assert resp.status_code == 404
