@@ -1,0 +1,19 @@
+version: "3"  # optional
+services:
+  webapp:
+    image: nginx:alpine
+    volumes:
+      - ./tabooword/app:/usr/share/nginx/html
+      - ./storage/avatar:/usr/share/nginx/html/figure
+    ports:
+      - 8080:80
+  backend:
+    image: tabooword:1.0.0
+    volumes:
+      - ./tabooword:/workdir/tabooword
+      - ./storage:/workdir/storage
+    ports:
+      - 5000:5000
+    env_file:
+      - env.list
+    command: python -m flask run --host=0.0.0.0 --debug 
