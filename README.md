@@ -86,3 +86,25 @@ The structure of the source code.
     requests.post("http://127.0.0.1:5000/reset_word")
     ```
 3. Check response from log inside container
+
+## Instruction
+- Create docker image for backend
+    ```
+    make build
+    ```
+- Run notebook environment for backend (`env.list` is needed. Please ask to the owner of this repo.)
+    ```
+    make run_notebook
+    ```
+- Run api (`env.list` is needed. Please ask to the owner of this repo.)
+    ```
+    make run_app
+    ```
+- Run webapplication along with api (`env.list` is needed. Please ask to the owner of this repo.)
+    ```
+    make run
+    ```
+- Unittest for backend
+    ```
+    make test
+    ```
