@@ -21,7 +21,7 @@
 
     **Response**\
     OK or error message
-3. `POST /random` = random word for each player \
+3. `GET /random` = random word for each player \
     **Request**\
         -\
     **Response**
@@ -30,11 +30,19 @@
     ---------  | ----------------------------------------
     players    | List of players' name (`name`) and url linked to player card (`url`)
     message    | Response message
-3. `POST /reset_word` = reset word collection \
+3. `GET /reset_word` = reset word collection \
     **Request**\
         -\
     **Response**\
     ok message
+
+4. `GET /check_status` = check status of word collection \
+    **Request**\
+        -\
+    **Response**\
+    FIELD NAME | Description
+    ---------  | ----------------------------------------
+    num_word   | Number of word inside word collection
 
 ### Testing
 1. run `make run_app`

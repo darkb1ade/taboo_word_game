@@ -18,7 +18,6 @@ build:
 run_bash:
 	docker run -it --rm $(DOCKER_ADDOPTS) $(IMAGE_NAME):$(TAG) bash
 
-# run notebook
 run_webapp:
 	docker run -d -v $(PROJECT_ROOT)/tabooword/app:/usr/share/nginx/html/ -p 8080:80 --name tabooword-webapp nginx:alpine
 run_notebook::
@@ -29,13 +28,25 @@ run_notebook::
 	@echo "########################################"
 	@echo "########################################"
 	@echo "##"
-	@echo "##  If you run this container locally:"
-	@echo "##            access jupyter at:"
+	@echo "##  If you run this container locally"
+	@echo "##            access jupyter at"
 	@echo "##        http://localhost:$(HOST_JUPYTER_PORT)"
 	@echo "##"
 	@echo "########################################"
 	@echo "########################################"
-
+run::
+	docker compose up --detach
+run::
+	@echo "########################################"
+	@echo "########################################"
+	@echo "##"
+	@echo "##  If you run this container locally"
+	@echo "##     access web application at at"
+	@echo "##       http://localhost:8080"
+	@echo "##"
+	@echo "########################################"
+	@echo "########################################"
+	
 # remove the container
 rm_app:
 	docker rm -f tabooword-app || echo
