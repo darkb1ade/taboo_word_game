@@ -3,7 +3,6 @@ from src import Engine
 import logging
 from flask_cors import CORS
 
-# logger = logging.getLogger(__name__)
 app = Flask(__name__, static_url_path="")
 app.config["DEBUG"] = True
 ENGINE = Engine()
@@ -43,7 +42,6 @@ def init_engine():
         ENGINE.init_engine(names=names, avatar_list=avatars)
         app.logger.info(ENGINE)
         return "ok"
-        # return "ok", 200
 
     except Exception as e:
         app.logger.info(e)
@@ -75,7 +73,6 @@ def add():
         msg = ENGINE.add(word)
         app.logger.info(ENGINE)
         app.logger.info(msg)
-        # return Response(jsonify({"message": msg}), status=200, mimetype="application/json")
         return jsonify({"message": msg})
 
     except AssertionError as e:  # duplicated word
@@ -83,8 +80,7 @@ def add():
         return (
             jsonify({"message": e.args[0]}),
             500,
-        )  # Response(e.args[0], status=500, mimetype="application/json")
-
+        ) 
 
 @app.route("/random", methods=["GET"])
 def random():
