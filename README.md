@@ -39,7 +39,7 @@
 4. `GET /check_status` = check status of word collection \
     **Request**\
         -\
-    **Response**\
+    **Response**
     FIELD NAME | Description
     ---------  | ----------------------------------------
     num_word   | Number of word inside word collection
