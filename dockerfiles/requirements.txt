@@ -17,3 +17,4 @@ jupyterlab==3.4.8
 py-avataaars==1.1.2
 tqdm==4.66.1
 flask==3.0.0
+flask-cors==4.0.0

@@ -50,10 +50,10 @@ class Engine:
     def _set_directory(self):
         with open("/workdir/tabooword/config/directory.yml", "r") as f:
             config = yaml.load(f, Loader=yaml.SafeLoader)
-        self.avatar_files = glob(f'{config["avatar_dir"]}/*')
+        self.avatar_files = glob(f'{config["avatar_dir"]}/*.png')
         self.avart_dir = config["avatar_dir"]
 
-    def _set_player(self, name: list, avatar_list: dict = None) -> None:
+    def _set_player(self, name: list, avatar_list: list = None) -> None:
         """_summary_
         Initialize Player base on given inputs(name and avatar's file name)
 
@@ -64,12 +64,12 @@ class Engine:
         players = []
         if avatar_list is None:  # not given avatar do random
             avatar_list = [
-                self.avatar_files[random.randint(0, 299)]
+                self.avatar_files[random.randint(0, len(self.avatar_files) - 1)]
                 for _ in range(self.num_player)
             ]
         else:
             try:
-                avatar_list = [self.avatar_files[int(n)] for n in avatar_list]
+                avatar_list = [f"{self.avart_dir}/{avatar}" for avatar in avatar_list]
             except ValueError as e:
                 raise e
         for name, avatar in zip(name, avatar_list):
@@ -103,7 +103,7 @@ class Engine:
         """
         assert hasattr(self, "num_player"), "[!] Object is not initialized!"
         assert (
-            len(self.randomizer.words) > self.num_player
+            len(self.randomizer.words) >= self.num_player
         ), f"[!] Not enough word for this round. Have {len(self.randomizer)} word for {self.num_player} players."
 
         # Add random word to players' attribute.

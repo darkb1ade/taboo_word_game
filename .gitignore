@@ -130,7 +130,7 @@ dmypy.json
 out/
 .idea
 notebook/*
-storage/*
+storage/avatar/tmp
 env.list
 dockerfiles/notebook/.jupyter/lab
 webapp/_*
