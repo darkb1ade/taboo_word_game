@@ -1,5 +1,34 @@
 # taboo_word_game
-
+## Structure
+The structure of the source code.
+```
+.
+|
+├── dockerfiles
+|   ├── notebook                 # configuration for jupyter notebook
+|   └── Dockerfile               # dockerfile for tabooword api
+|
+├── storage                      
+|   ├── avatar                   # avatar images
+|   └── font                     # fonts
+|    
+├── tabooword                    
+|   ├── app                      # web application related files
+|   |    ├── css                
+|   |    ├── js
+|   |    ├── home.html           # Create players' character
+|   |    ├── index.html          # Homepage
+|   |    └── word.html           # Add and random word
+|   |    
+|   ├── config                   # config for artifacts path
+|   ├── src                      # backend computation
+|   └── app.py                   # api
+|    
+├── tests                        # unittest
+├── Makefile                  
+├── README.md
+└── docker-compose.yml
+```
 ## API
 ### Specification
 1. `POST /init_engine` = initialize players, avatars, word collection (if needed) \
