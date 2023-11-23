@@ -103,7 +103,7 @@ class Engine:
         """
         assert hasattr(self, "num_player"), "[!] Object is not initialized!"
         assert (
-            len(self.randomizer.words) > self.num_player
+            len(self.randomizer.words) >= self.num_player
         ), f"[!] Not enough word for this round. Have {len(self.randomizer)} word for {self.num_player} players."
 
         # Add random word to players' attribute.
