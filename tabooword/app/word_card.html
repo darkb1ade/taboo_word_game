@@ -9,7 +9,7 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
-    <title>Taboo Word</title>
+    <title>Taboo Card</title>
     <ul class="nav nav-tabs">
         <li class="nav-item">
           <a class="nav-link active" aria-current="page" href="/">Home</a>
@@ -20,15 +20,15 @@
     <script type="text/javascript" src="js/utils.js"></script>
     <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
 
-    <div class="jumbotron text-center">
-        <h1>Welcome to Taboo Word Game</h1>
+    <div class="jumbotron text-center bg-success text-white">
+        <h1>Welcome to Taboo Card Game</h1>
         
     </div>
     <div class="bs-stepper">
         <div class="bs-stepper-header" role="tablist">
           <!-- your steps here -->
           <div class="step" data-target="#logins-part">
-            <button type="button" class="step-trigger" role="tab" aria-controls="logins-part" id="logins-part-trigger" onclick="window.location.href ='home.html'">
+            <button type="button" class="step-trigger" role="tab" aria-controls="logins-part" id="logins-part-trigger" onclick="window.location.href ='home_card.html'">
               <span class="bs-stepper-circle">1</span>
               <span class="bs-stepper-label">Create Players</span>
             </button>
@@ -37,7 +37,7 @@
           <div class="step active" data-target="#information-part">
             <button type="button" class="step-trigger" role="tab" aria-controls="information-part" id="information-part-trigger">
               <span class="bs-stepper-circle">2</span>
-              <span class="bs-stepper-label">Adding Words and Randomizing</span>
+              <span class="bs-stepper-label">Randomizing</span>
             </button>
           </div>
         </div>
@@ -45,32 +45,17 @@
     <script>
         obj = updateWordStatus()
     </script>
-    <div class="d-flex justify-content-center" style="font-size: 20px">
-        <p>Let's add the <strong> TABOO WORDS </strong>  to your collection!</p>
-        
-    </div>
+
     <div class="d-flex justify-content-center" style="font-size: 30px">
         <p><br><strong>Collection Status</strong></p>
     </div>
     <div class="d-flex justify-content-center" id = "word_status">
         
     </div>
+
     <div class="d-flex justify-content-center" style="margin-top: 30px;">
-        <form onkeydown="return event.key != 'Enter';">
-            <div class="form-group" id="wordForm">
-            <input type="name" size="30" style="height: 50px;" class="form-control" id="wordInput" placeholder="Enter your taboo word">
-            </div>
-        </form>
-        <button class="btn btn-success" style="color: white; margin-left: 15px;height: 50px;" onclick="addWord()">
-            Enter
-        </button>
-        <button class="btn btn-danger" style="color: white; margin-left: 15px;height: 50px;" onclick="resetWord()">
-            Reset
-        </button>
-    </div>
-    <div class="d-flex justify-content-center" style="margin-top: 30px;">
-        <button class="btn btn-primary" style="color: white; margin-left: 15px;height: 50px;" onclick="randomWord()">
-            Start Random Taboo Word
+        <button class="btn btn-primary" style="color: white; margin-left: 15px;height: 50px;" onclick="randomCard()">
+            Start Random Taboo Card
         </button>
     </div>
     <div class="d-flex justify-content-center" style="margin-top: 10px;margin-bottom:50px ;" id="result"></div>
