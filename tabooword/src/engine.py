@@ -92,7 +92,7 @@ class Engine:
         """_summary_
         Restart the randomizer to reset all added words. 
         """
-        self.randomizer = Randomizer()
+        self.randomizer = Randomizer(self.card_mode)
 
     def add(self, word: str) -> str:
         """_summary_
