@@ -16,6 +16,7 @@ function initPlayer(data) {//call init_engine api
         'names': names,
         "avatars": avatars,
         "words": true,
+        "card_mode": false
       }),
       headers: {
         'Content-Type': 'application/json',
@@ -26,6 +27,41 @@ function initPlayer(data) {//call init_engine api
       if(response.status==200){
         alert("Success! Let's start the game")
         window.location.href ='word.html'
+      }
+      else{
+        txt = "Something wrong! \nError status: "+response.status+ "\nMessage: "+response.statusText
+        alert(txt)
+      }
+    }
+    )
+  }
+
+function initPlayerCardMode(data) {//call init_engine api
+    const names = data[0]
+    const avatars = data[1]
+    console.log('name=', names, 'avatars=', avatars)
+    if (names.length==0|avatars.length==0){
+      alert("Please add your character to start the game.")
+      return False
+    }
+    
+    const response = fetch('http://127.0.0.1:5000/init_engine', {
+      method: 'POST',
+      body: JSON.stringify({
+        'names': names,
+        "avatars": avatars,
+        "words": true,
+        "card_mode": true
+      }),
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    })
+    .then((response) => {
+      console.log('API init_engine', response.status, response.statusText)
+      if(response.status==200){
+        alert("Success! Let's start the game")
+        window.location.href ='word_card.html'
       }
       else{
         txt = "Something wrong! \nError status: "+response.status+ "\nMessage: "+response.statusText
@@ -106,7 +142,26 @@ function randomWord(){ //call random api
     
   })
 }
-
+function randomCard(){ //call random api
+  const div = document.getElementById("result");
+  div.innerHTML = '<div class="loader"></div>'
+  const response = fetch('http://127.0.0.1:5000/random_card')
+  .then(response => response.json()
+  .then(data => ({status: response.status, body: data})
+    )
+  ).then(obj=>{
+    console.log('API random card', obj)
+    updateWordStatus()
+    if(obj["status"]==200){
+      genQrcode(obj["body"]["player"])
+    }
+    else{
+      div.innerHTML = ''
+      alert(obj["body"]["message"])
+    }
+    
+  })
+}
 function genQrcode(data){ //generate QRCode
   result = data
   console.log('Create QRcode data=',result, 'idx=',idx)

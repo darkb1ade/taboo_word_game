@@ -85,6 +85,60 @@ class PlayersCardGenerator:
             )
         return card
 
+    def _generate_card_image(
+        self,
+        player,
+        height: int,
+        width: int,
+        add_word: bool = True,
+        image_height: int = 363,
+    ) -> Image.Image:
+        """_summary_
+
+        Args:
+            player (Player): Each player object storing name, avatar, word, url, image.
+            height (int): Height of player's avatar.
+            width (int): width of player's avatar.
+            add_word (bool, optional): Add player's taboo card to player's card or not. Defaults to True.
+            image_height (int, optional): Height of the card image to be added in player's card.
+
+        Returns:
+            card (Image.Image): Player's card containing avatar, name, tabooword(optional) and taboocard(optional).
+        """
+        # png file: transparent channel to white
+        img = Image.open(player.avatar)
+        if player.avatar.split(".")[-1] == "png":
+            img = np.array(img)
+            img[img[..., -1] == 0] = [255, 255, 255, 0]
+            img = Image.fromarray(img)
+
+        card_img = Image.open(player.image)
+        if player.image.split("/")[-1].split(".")[0] == "png":
+            card_img = np.array(card_img)
+            card_img[card_img[..., -1] == 0] = [255, 255, 255, 0]
+            card_img = Image.fromarray(card_img)
+        card_img = card_img.resize((width, image_height))
+
+        # incorrect size: resize
+        if (img.height != height) and (img.width != width):
+            img = img.resize((width, height))
+
+        card = Image.new("RGB", (width, int(height * 1.5) + image_height))
+        card.paste(img, (0, 0))
+        draw = ImageDraw.Draw(card)
+        self._add_txt(player.name, font_size=int(height * 0.2), draw=draw, y=height)
+        if add_word is True:
+            # player.word = path to image
+            self._add_txt(
+                f"Card: {player.word.split('.')[0].replace('_', ' ')}",  # ex:
+                font_size=int(height * 0.07),
+                draw=draw,
+                y=int(height * 1.3),
+            )
+            card.paste(card_img, (0, int(height * 1.5)))
+
+        return card
+
     def _add_txt(
         self, txt: str, font_size: int, draw: ImageDraw.ImageDraw, y: int
     ) -> None:
@@ -125,6 +179,33 @@ class PlayersCardGenerator:
             )
         return cards_word, cards_no_word
 
+    def _generate_cards_image(self, players: list, h=300, w=250):
+        """_summary_
+
+        Args:
+            players (list): List of all Player object with name, avatar and taboo word. 
+            h (int, optional): Height of the avatar.
+            w (int, optional): Width of the avatar.
+
+        Returns:
+            cards_image (list): List of all player's card with taboo image.
+            cards_no_image (list): List of all player's card without taboo image.
+        """
+        # image size = 250x363
+        cards_image, cards_no_image = [], []
+        for player in players:
+            cards_image.append(
+                self._generate_card_image(
+                    player=player, height=h, width=w, add_word=True
+                )
+            )
+            cards_no_image.append(
+                self._generate_card_image(
+                    player=player, height=h, width=w, add_word=False
+                )
+            )
+        return cards_image, cards_no_image
+
     def run(self, players: list):
         """_summary_
         Generate url of all player's cards.
@@ -143,6 +224,34 @@ class PlayersCardGenerator:
             w_offset += card_word.width
 
         for idx, (player, card_no_word) in enumerate(zip(players, list_card_no_word)):
+            player_card = card.copy()
+            player_card.paste(card_no_word, (idx * w[idx - 1], 0))
+            player_card.save(f"{self.cache_dir}/result_{idx:02d}.png")
+            upload_status = self.imagekit.upload_file(
+                file=open(f"{self.cache_dir}/result_{idx:02d}.png", "rb"),  # required
+                file_name=f"{dt}_result_{idx:02d}.png",  # required
+            )
+            player.url = upload_status.url
+        # return player
+
+    def run_card(self, players: list):
+        """_summary_
+        Generate url of all player's cards.
+        Args:
+            players (list[Player]): List of Player object with name, avatar and word.
+        """
+        dt = datetime.now().strftime("%m%d%Y")
+        list_card_image, list_card_no_image = self._generate_cards_image(players)
+        w = [card_img.width for card_img in list_card_image]
+        h = max([card_img.height for card_img in list_card_no_image])
+        card = Image.new("RGB", (sum(w), h))
+
+        w_offset = 0
+        for card_word in list_card_image:
+            card.paste(card_word, (w_offset, 0))
+            w_offset += card_word.width
+
+        for idx, (player, card_no_word) in enumerate(zip(players, list_card_no_image)):
             player_card = card.copy()
             player_card.paste(card_no_word, (idx * w[idx - 1], 0))
             player_card.save(f"{self.cache_dir}/result_{idx:02d}.png")

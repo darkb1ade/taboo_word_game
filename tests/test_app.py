@@ -9,6 +9,7 @@ import pytest
         ("names=a,b&avatars=01.png,02.png", 200),
         ("names=a,b&avatars=a,b", 500),
         ("names=a,b&avatars=01.png,02.png&words=True", 200),
+        ("names=a,b&avatars=01.png,02.png&words=True&card_mode=True", 200),
     ],
 )
 def test_init_engine(parameter, expected_status):
@@ -40,3 +41,13 @@ def test_random():
     assert list(data.keys()) == ["message", "player"]
     resp = requests.get(f"http://127.0.0.1:5000/random")
     assert resp.status_code == 500
+
+
+def test_random_card():
+    requests.post(
+        "http://127.0.0.1:5000/init_engine?names=a,b&words=True&card_mode=True"
+    )
+    resp = requests.get(f"http://127.0.0.1:5000/random_card")
+    data = resp.json()
+    assert resp.status_code == 200
+    assert list(data.keys()) == ["message", "player"]

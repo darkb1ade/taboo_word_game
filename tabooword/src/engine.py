@@ -11,11 +11,12 @@ class Player:
     name: str
     avatar: str
     word: str = None
+    image: str = None
     url: str = ""
 
     def __repr__(self):
         return repr(
-            f"name = {self.name}\n word = {self.word}\n avatar = {self.avatar}\n url = {self.url}"
+            f"name = {self.name}\n image = {self.image}\n word = {self.word}\n avatar = {self.avatar}\n url = {self.url}"
         )
 
 
@@ -27,8 +28,8 @@ class Engine:
             names (list): players' name
             avatar_list (dict, optional): List of avatar's file name. Defaults to None (randomly select avatar).
         """
-
-        self.randomizer = Randomizer()
+        self.card_mode = False
+        self.randomizer = None
         self.player_card_generator = PlayersCardGenerator()
 
     def __repr__(self) -> str:
@@ -36,9 +37,13 @@ class Engine:
             players = [player.name for player in self.players]
         else:
             players = []
-        return f"Engine(players = {players}, num_words = {len(self.randomizer)})"
+        return f"Engine(players = {players}, num_words = {len(self.randomizer)} card_mode = {self.card_mode})"
 
-    def init_engine(self, names: list, avatar_list: list):
+    def init_engine(self, names: list, avatar_list: list, card_mode=False):
+        self.card_mode = card_mode  # set card mode
+        self.randomizer = Randomizer(
+            card_mode=card_mode
+        )  # init randomizer for card mode
         if avatar_list is not None:
             assert len(names) == len(
                 avatar_list
@@ -52,6 +57,9 @@ class Engine:
             config = yaml.load(f, Loader=yaml.SafeLoader)
         self.avatar_files = glob(f'{config["avatar_dir"]}/*.png')
         self.avart_dir = config["avatar_dir"]
+
+        if self.card_mode is True:  # In card mode, store storage to card image
+            self.img_dir = config["image_dir"]
 
     def _set_player(self, name: list, avatar_list: list = None) -> None:
         """_summary_
@@ -84,7 +92,7 @@ class Engine:
         """_summary_
         Restart the randomizer to reset all added words. 
         """
-        self.randomizer = Randomizer()
+        self.randomizer = Randomizer(self.card_mode)
 
     def add(self, word: str) -> str:
         """_summary_
@@ -96,6 +104,30 @@ class Engine:
             str: status message. Successfully added or not.
         """
         return self.randomizer.add(word)
+
+    def run_card(self):
+        """_summary_
+            Run the engine to randomize playing card and reset the deck in card game mode.
+        """
+        assert hasattr(self, "num_player"), "[!] Object is not initialized!"
+        assert (
+            len(self.randomizer.words) >= self.num_player
+        ), f"[!] Not enough card for this round. Have {len(self.randomizer)} card for {self.num_player} players."
+
+        # Add random word to players' attribute.
+        for player in self.players:
+            word = self.randomizer.random()
+            player.word = f"{word[0]}_of_{word[-1].lower()}.png"
+            player.image = f"{self.img_dir}/{player.word}"
+
+        # Add image url to players' attribute (inplace)
+        self.player_card_generator.run_card(self.players)
+        msg = f"Finished random. Total {len(self.randomizer)} card left."
+
+        # reset deck
+        self.randomizer._init_card()
+
+        return msg
 
     def run(self):
         """_summary_

@@ -20,6 +20,7 @@ def init_engine():
         names = parameters.get("names")
         avatars = parameters.get("avatars")
         is_reset_words = parameters.get("words", False)
+        card_mode = parameters.get("card_mode", False)
     except:
         names = request.args.get("names").replace(" ", "")
         names = names.split(",")
@@ -28,7 +29,10 @@ def init_engine():
             avatars = avatars.replace(" ", "")
             avatars = avatars.split(",")
         is_reset_words = request.args.get("words", False)
-    app.logger.info(f"start /init_engine {names=} {avatars=} {is_reset_words=}")
+        card_mode = request.args.get("card_mode", False)
+    app.logger.info(
+        f"start /init_engine {names=} {avatars=} {is_reset_words=} {card_mode=}"
+    )
 
     # set reset words
     if isinstance(is_reset_words, str):
@@ -38,8 +42,11 @@ def init_engine():
         ENGINE.reset()
         app.logger.info(f"start /init_engine reset_word")
 
+    if isinstance(card_mode, str):
+        card_mode = card_mode.lower() == "true"
+
     try:
-        ENGINE.init_engine(names=names, avatar_list=avatars)
+        ENGINE.init_engine(names=names, avatar_list=avatars, card_mode=card_mode)
         app.logger.info(ENGINE)
         return "ok"
 
@@ -80,13 +87,32 @@ def add():
         return (
             jsonify({"message": e.args[0]}),
             500,
-        ) 
+        )
+
 
 @app.route("/random", methods=["GET"])
 def random():
     app.logger.info(f"start /random")
     try:
         msg = ENGINE.run()
+        players = [
+            {"name": player.name, "url": player.url} for player in ENGINE.players
+        ]
+        app.logger.info(f"start /random {msg=}, {players=}")
+        app.logger.info(ENGINE)
+        return jsonify({"player": players, "message": msg})
+
+    except AssertionError as e:  # word not enough or engine not init
+        app.logger.info(e)
+        return jsonify({"message": e.args[0]}), 500
+
+
+@app.route("/random_card", methods=["GET"])
+def random_card():
+    app.logger.info(f"start /random_card")
+    app.logger.info(f"test {ENGINE}")
+    try:
+        msg = ENGINE.run_card()
         players = [
             {"name": player.name, "url": player.url} for player in ENGINE.players
         ]
