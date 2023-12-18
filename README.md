@@ -16,9 +16,11 @@ The structure of the source code.
 |   ├── app                      # web application related files
 |   |    ├── css                
 |   |    ├── js
+|   |    ├── home_card.html      # Create players' character for card mode
 |   |    ├── home.html           # Create players' character
 |   |    ├── index.html          # Homepage
-|   |    └── word.html           # Add and random word
+|   |    ├── word_card.html      # Add and random taboo card
+|   |    └── word.html           # Add and random taboo word
 |   |    
 |   ├── config                   # config for artifacts path
 |   ├── src                      # backend computation
@@ -39,6 +41,7 @@ The structure of the source code.
     names      | List of players' name
     avatars    | List of avatars' name (default is None for randomly select)
     words      | Reset current word collection or not. Value should be true or false
+    card_mode  | Play to game in card mode or not. Value should be true or false.
 
     **Response**\
     OK message
@@ -59,13 +62,22 @@ The structure of the source code.
     ---------  | ----------------------------------------
     players    | List of players' name (`name`) and url linked to player card (`url`)
     message    | Response message
-3. `GET /reset_word` = reset word collection \
+4. `GET /random_card` = random card for each player \
+    **Request**\
+        -\
+    **Response**
+    
+    FIELD NAME | Description
+    ---------  | ----------------------------------------
+    players    | List of players' name (`name`) and url linked to player card (`url`)
+    message    | Response message
+5. `GET /reset_word` = reset word collection \
     **Request**\
         -\
     **Response**\
     ok message
 
-4. `GET /check_status` = check status of word collection \
+6. `GET /check_status` = check status of word collection \
     **Request**\
         -\
     **Response**
