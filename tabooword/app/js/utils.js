@@ -25,7 +25,7 @@ function initPlayer(data) {//call init_engine api
     .then((response) => {
       console.log('API init_engine', response.status, response.statusText)
       if(response.status==200){
-        alert("Success! Let's start the game")
+        alert("Success! Let's start the game. Total player="+names.length.toString())
         window.location.href ='word.html'
       }
       else{
@@ -60,7 +60,7 @@ function initPlayerCardMode(data) {//call init_engine api
     .then((response) => {
       console.log('API init_engine', response.status, response.statusText)
       if(response.status==200){
-        alert("Success! Let's start the game")
+        alert("Success! Let's start the game. Total player="+names.length.toString())
         window.location.href ='word_card.html'
       }
       else{

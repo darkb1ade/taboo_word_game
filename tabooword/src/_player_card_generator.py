@@ -2,11 +2,12 @@ import os
 
 # import qrcode
 from imagekitio import ImageKit
+from imagekitio.models.UploadFileRequestOptions import UploadFileRequestOptions
 from datetime import datetime
 from PIL import Image, ImageFont, ImageDraw
 import numpy as np
 import yaml
-
+import math
 
 # TODO: Move qrcode generator to js in webapp
 # def generate_qrcode(
@@ -24,7 +25,7 @@ import yaml
 
 
 class PlayersCardGenerator:
-    def __init__(self, font_name: str = "PK Phuket Medium.ttf") -> None:
+    def __init__(self, font_name: str = "PK Phuket Medium.ttf", max_player_row:int = 4) -> None:
         """_summary_
 
         Args:
@@ -37,6 +38,13 @@ class PlayersCardGenerator:
             public_key=os.environ["IMAGEKIT_PUBLIC_KEY"],
             url_endpoint=os.environ["URL_ENDPOINT"],
         )
+        self.imagekit_options = UploadFileRequestOptions(
+            use_unique_file_name=True,
+            # overwrite_file=True,
+            # overwrite_tags=True,
+            folder = f'/{datetime.now().strftime("%m%d%Y")}'
+        )
+        self.max_player_row = max_player_row # max number of player in 1 row inside the card
 
     def _set_directory(self) -> None:
         """_summary_
@@ -212,24 +220,30 @@ class PlayersCardGenerator:
         Args:
             players (list[Player]): List of Player object with name, avatar and word.
         """
-        dt = datetime.now().strftime("%m%d%Y")
-        list_card_word, list_card_no_word = self._generate_cards(players)
-        w = [card_word.width for card_word in list_card_word]
-        h = max([card_word.height for card_word in list_card_no_word])
-        card = Image.new("RGB", (sum(w), h))
+        num_row = math.ceil(len(players)/self.max_player_row)
+        if num_row==1:
+            num_col = len(player)
+        else:
+            num_col = self.max_player_row
+        list_card_word, list_card_no_word = self._generate_cards(players) # all card have same height and width
+        w, h = list_card_word[0].width, list_card_word[0].height
+        card = Image.new("RGB", (int(w*num_col), int(h*num_row)))###
 
-        w_offset = 0
-        for card_word in list_card_word:
-            card.paste(card_word, (w_offset, 0))
-            w_offset += card_word.width
+        for idx, card_word in enumerate(list_card_word):
+            w_loc = int((idx%num_col)*w)
+            h_loc = int((idx//num_col)*h)
+            card.paste(card_word, (w_loc, h_loc))
+
 
         for idx, (player, card_no_word) in enumerate(zip(players, list_card_no_word)):
             player_card = card.copy()
-            player_card.paste(card_no_word, (idx * w[idx - 1], 0))
+            w_loc = int((idx%num_col)*w)
+            h_loc = int((idx//num_col)*h)
+            player_card.paste(card_no_word, (w_loc, h_loc))
             player_card.save(f"{self.cache_dir}/result_{idx:02d}.png")
             upload_status = self.imagekit.upload_file(
                 file=open(f"{self.cache_dir}/result_{idx:02d}.png", "rb"),  # required
-                file_name=f"{dt}_result_{idx:02d}.png",  # required
+                file_name=f"defaultMode_result_{idx:02d}.png",  # required
             )
             player.url = upload_status.url
         # return player
@@ -240,24 +254,31 @@ class PlayersCardGenerator:
         Args:
             players (list[Player]): List of Player object with name, avatar and word.
         """
-        dt = datetime.now().strftime("%m%d%Y")
+        num_row = math.ceil(len(players)/self.max_player_row)
+        if num_row==1:
+            num_col = len(player)
+        else:
+            num_col = self.max_player_row
         list_card_image, list_card_no_image = self._generate_cards_image(players)
-        w = [card_img.width for card_img in list_card_image]
-        h = max([card_img.height for card_img in list_card_no_image])
-        card = Image.new("RGB", (sum(w), h))
+        w, h = list_card_image[0].width, list_card_image[0].height
+        card = Image.new("RGB", (int(w*num_col), int(h*num_row)))###
 
-        w_offset = 0
-        for card_word in list_card_image:
-            card.paste(card_word, (w_offset, 0))
-            w_offset += card_word.width
+        for idx, card_word in enumerate(list_card_image):
+            w_loc = int((idx%num_col)*w)
+            h_loc = int((idx//num_col)*h)
+            card.paste(card_word, (w_loc, h_loc))
 
-        for idx, (player, card_no_word) in enumerate(zip(players, list_card_no_image)):
+
+        for idx, (player, card_no_image) in enumerate(zip(players, list_card_no_image)):
             player_card = card.copy()
-            player_card.paste(card_no_word, (idx * w[idx - 1], 0))
+            w_loc = int((idx%num_col)*w)
+            h_loc = int((idx//num_col)*h)
+            player_card.paste(card_no_image, (w_loc, h_loc))
             player_card.save(f"{self.cache_dir}/result_{idx:02d}.png")
             upload_status = self.imagekit.upload_file(
                 file=open(f"{self.cache_dir}/result_{idx:02d}.png", "rb"),  # required
-                file_name=f"{dt}_result_{idx:02d}.png",  # required
+                file_name=f"cardMode_result_{idx:02d}.png",  # required
+                options = self.imagekit_options
             )
             player.url = upload_status.url
         # return player

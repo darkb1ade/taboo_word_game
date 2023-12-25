@@ -24,10 +24,12 @@ function createPlayer(){
     const nameElement = instance.getElementById('playerName')
     nameElement.id = player+"Name"
     div.append(instance)
+    document.getElementById("button_footer").scrollIntoView();
   }
 function deletePlayer(){
     document.getElementById("Player"+numPlayer.toString()).remove()
     numPlayer = numPlayer-1
+    document.getElementById("Player"+numPlayer.toString()).scrollIntoView();
 }
 function changeImageLeft(id){//change character image to left
     var maxFile=16
