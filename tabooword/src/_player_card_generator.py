@@ -1,6 +1,7 @@
 import os
 
 # import qrcode
+from ._link_shorten import create_url, update_url, get_url_id
 from imagekitio import ImageKit
 from imagekitio.models.UploadFileRequestOptions import UploadFileRequestOptions
 from datetime import datetime
@@ -222,7 +223,7 @@ class PlayersCardGenerator:
         """
         num_row = math.ceil(len(players)/self.max_player_row)
         if num_row==1:
-            num_col = len(player)
+            num_col = len(players)
         else:
             num_col = self.max_player_row
         list_card_word, list_card_no_word = self._generate_cards(players) # all card have same height and width
@@ -256,7 +257,7 @@ class PlayersCardGenerator:
         """
         num_row = math.ceil(len(players)/self.max_player_row)
         if num_row==1:
-            num_col = len(player)
+            num_col = len(players)
         else:
             num_col = self.max_player_row
         list_card_image, list_card_no_image = self._generate_cards_image(players)
@@ -280,5 +281,15 @@ class PlayersCardGenerator:
                 file_name=f"cardMode_result_{idx:02d}.png",  # required
                 options = self.imagekit_options
             )
-            player.url = upload_status.url
+            pathname = f"cardMode/{idx:02d}"
+            url = create_url(originalURL=upload_status.url, pathname=pathname)
+            if url is None:
+                if player.url_id is None:
+                    url_id = get_url_id(pathname = pathname)
+                    player.url_id = url_id
+                else:
+                    url_id = player.url_id
+                url = update_url(idString=url_id, originalURL=upload_status.url)
+            player.url = url
+            #player.tmp = upload_status
         # return player

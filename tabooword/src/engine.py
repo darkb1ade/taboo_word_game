@@ -13,7 +13,7 @@ class Player:
     word: str = None
     image: str = None
     url: str = ""
-
+    url_id:str = None
     def __repr__(self):
         return repr(
             f"name = {self.name}\n image = {self.image}\n word = {self.word}\n avatar = {self.avatar}\n url = {self.url}"
