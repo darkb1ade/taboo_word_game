@@ -170,6 +170,7 @@ function genQrcode(data){ //generate QRCode
   const template = document.getElementById("qrTemplate");
   const instance = template.content.cloneNode(true);
   instance.getElementById("playerTitle").innerHTML = result[idx]["name"];
+  instance.getElementById("uplayerURL").innerHTML = result[idx]["url"];
   new QRCode(instance.getElementById("qrcode"), result[idx]["url"]);
   div.append(instance)
 }
@@ -181,6 +182,7 @@ function changeQRRight(){ //get right QR code
   console.log('data=',result, "idx=", idx)
   document.getElementById("qrcode").innerHTML=''
   document.getElementById("playerTitle").innerHTML = result[idx]["name"];
+  document.getElementById("uplayerURL").innerHTML = result[idx]["url"];
   new QRCode(document.getElementById("qrcode"), result[idx]["url"]);
 
 }
@@ -193,6 +195,7 @@ function changeQRLeft(){ //get left QR code
   console.log('data=',result, "idx=", idx)
   document.getElementById("qrcode").innerHTML=''
   document.getElementById("playerTitle").innerHTML = result[idx]["name"];
+  document.getElementById("uplayerURL").innerHTML = result[idx]["url"];
   new QRCode(document.getElementById("qrcode"), result[idx]["url"]);
 
 }
